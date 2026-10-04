@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace NmeaLogViewer {
@@ -17,9 +18,13 @@ namespace NmeaLogViewer {
     /// Description of LogView.
     /// </summary>
     public partial class LogView : Form {
+        [DllImport("user32.dll")]
+        static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+        
         List<RegexOption> _rgxs = new List<RegexOption>();
         
         VisBox.AxisLimits _axisLimitsX = new VisBox.AxisLimits();
+        int _linesNo = 0;
         
         public LogView() {
             InitializeComponent();
@@ -36,17 +41,85 @@ namespace NmeaLogViewer {
             
             nudLineStart.Value = 0;
             nudLineStop.Value = linesNo;
+            
+            _linesNo = linesNo;
+            
+            hScrlBrView.Minimum = 0;
+            hScrlBrView.Maximum = linesNo;
+            hScrlBrView.LargeChange = linesNo;
+            
+            hScrlBrView.MouseWheel += hScrlBr_mouseWheel;
         }
         
-        void NudLineStartValueChanged ( object sender, EventArgs e ) {
-            _axisLimitsX.Min = (float)(nudLineStart.Value);
+        bool _internalChange = false;
+        private void hScrlBr_mouseWheel(object sender, MouseEventArgs e) {
+            OnScroll( e.Delta );
+        }
+        
+        private void OnScroll(int MouseWheelDelta) {
+            bool LCtrlPressed = false;
+            if( GetAsyncKeyState( Keys.LControlKey ) != 0 ) { LCtrlPressed = true; }
+
+            int xMin = hScrlBrView .Value;
+            int xDst = hScrlBrView .LargeChange;
+            
+            int xMax = xMin + xDst;
+            int xMid = ( xMax + xMin ) / 2;
+            
+            if ( LCtrlPressed ) {
+                /* Zoom in/out */
+                if ( MouseWheelDelta > 0 )  { xDst = ( xDst * 11 ) / 10; }
+                else                        { xDst = ( xDst *  9 ) / 10; }
+                if ( xDst < 10 ) { xDst = 10; }
+            } else {
+                /* Move */
+                xMid += ( ( MouseWheelDelta > 0 ? 1 : -1 ) * hScrlBrView.LargeChange / 4 );
+            }
+            
+            if ( xDst >= _linesNo ) { xDst = _linesNo - 1; }
+            
+            xMin = xMid - xDst / 2;
+            if ( xMin < 0 ) { xMin = 0; }
+            xMax = xMin + xDst;
+            if ( xMax >= _linesNo ) {
+                xMax = _linesNo;
+                xMin = xMax - xDst;
+            }
+            
+            _internalChange = true;
+            hScrlBrView .Value = (int)xMin;
+            hScrlBrView .LargeChange = (int)xDst;
+            
+            _axisLimitsX.Min = (float)( hScrlBrView.Value );
+            _axisLimitsX.Max = _axisLimitsX.Min + (float)( hScrlBrView.LargeChange );
             RefreshPlots();
+            nudLineStart.Value = (int)_axisLimitsX.Min;
+            nudLineStop .Value = (int)_axisLimitsX.Max;
+            _internalChange = false;
+        }
+        
+        
+        void NudLineStartValueChanged ( object sender, EventArgs e ) {
+//            _axisLimitsX.Min = (float)(nudLineStart.Value);
+//            _zoomBar.Left = _axisLimitsX.Min;
+//            if ( !internalChange ) { RefreshPlots(); }
         }
         
         void NudLineStopValueChanged ( object sender, EventArgs e ) {
-            _axisLimitsX.Max = (float)(nudLineStop.Value);
-            RefreshPlots();
+//            _axisLimitsX.Max = (float)(nudLineStop.Value);
+//            _zoomBar.Right = _axisLimitsX.Max;
+//            if ( !internalChange ) { RefreshPlots(); }
         }
+        
+        void HScrlBrViewValueChanged(object sender, EventArgs e) {
+            _axisLimitsX.Min = (float)( hScrlBrView.Value );
+            _axisLimitsX.Max = _axisLimitsX.Min + (float)( hScrlBrView.LargeChange );
+            try { nudLineStart.Value = (int)_axisLimitsX.Min; } catch {}
+            try { nudLineStop .Value = (int)_axisLimitsX.Max; } catch {}
+            if ( !_internalChange ) { RefreshPlots(); }
+        }
+        
+        
         
         void TrVwDataAfterSelect ( object sender, TreeViewEventArgs e ) {
             
@@ -103,7 +176,7 @@ namespace NmeaLogViewer {
             pCharts.Controls.Add( plot );
             plot.BringToFront();
             plot.Resize += Plot_SizeChanged;
-//            plot1.Draw();
+            plot.MouseWheel += hScrlBr_mouseWheel;
         }
         
         private void RefreshPlots() {
@@ -127,7 +200,6 @@ namespace NmeaLogViewer {
         void Plot_SizeChanged ( object sender, EventArgs e ) {
             
         }
-        
     }
     
     public class NodeSeries {

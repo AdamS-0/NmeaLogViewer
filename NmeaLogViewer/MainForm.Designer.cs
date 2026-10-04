@@ -64,6 +64,7 @@ namespace NmeaLogViewer
             this.txtBxLogFilename = new System.Windows.Forms.TextBox();
             this.lblLogfile = new System.Windows.Forms.Label();
             this.grpBxStats = new System.Windows.Forms.GroupBox();
+            this.rtbStatus = new System.Windows.Forms.RichTextBox();
             this.prgBr1 = new System.Windows.Forms.ProgressBar();
             this.grpBxRgxs = new System.Windows.Forms.GroupBox();
             this.rtbRegexes = new System.Windows.Forms.RichTextBox();
@@ -72,7 +73,6 @@ namespace NmeaLogViewer
             this.trVwData = new System.Windows.Forms.TreeView();
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitter2 = new System.Windows.Forms.Splitter();
-            this.rtbStatus = new System.Windows.Forms.RichTextBox();
             this.grpBxInput.SuspendLayout();
             this.panel1.SuspendLayout();
             this.grpBxStats.SuspendLayout();
@@ -83,8 +83,8 @@ namespace NmeaLogViewer
             // 
             // grpBxInput
             // 
-            this.grpBxInput.Controls.Add(this.btnParseLog);
             this.grpBxInput.Controls.Add(this.btnNewView);
+            this.grpBxInput.Controls.Add(this.btnParseLog);
             this.grpBxInput.Controls.Add(this.btnLoadlog);
             this.grpBxInput.Controls.Add(this.panel1);
             this.grpBxInput.Dock = System.Windows.Forms.DockStyle.Top;
@@ -98,7 +98,7 @@ namespace NmeaLogViewer
             // btnParseLog
             // 
             this.btnParseLog.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnParseLog.Location = new System.Drawing.Point(153, 41);
+            this.btnParseLog.Location = new System.Drawing.Point(78, 41);
             this.btnParseLog.Name = "btnParseLog";
             this.btnParseLog.Size = new System.Drawing.Size(75, 25);
             this.btnParseLog.TabIndex = 3;
@@ -109,7 +109,7 @@ namespace NmeaLogViewer
             // btnNewView
             // 
             this.btnNewView.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnNewView.Location = new System.Drawing.Point(78, 41);
+            this.btnNewView.Location = new System.Drawing.Point(153, 41);
             this.btnNewView.Name = "btnNewView";
             this.btnNewView.Size = new System.Drawing.Size(75, 25);
             this.btnNewView.TabIndex = 2;
@@ -171,6 +171,18 @@ namespace NmeaLogViewer
             this.grpBxStats.TabIndex = 1;
             this.grpBxStats.TabStop = false;
             this.grpBxStats.Text = "Stats";
+            // 
+            // rtbStatus
+            // 
+            this.rtbStatus.BackColor = System.Drawing.SystemColors.Control;
+            this.rtbStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbStatus.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.rtbStatus.Location = new System.Drawing.Point(3, 39);
+            this.rtbStatus.Name = "rtbStatus";
+            this.rtbStatus.Size = new System.Drawing.Size(372, 120);
+            this.rtbStatus.TabIndex = 2;
+            this.rtbStatus.Text = "";
             // 
             // prgBr1
             // 
@@ -258,18 +270,6 @@ namespace NmeaLogViewer
             this.splitter2.Size = new System.Drawing.Size(3, 189);
             this.splitter2.TabIndex = 5;
             this.splitter2.TabStop = false;
-            // 
-            // rtbStatus
-            // 
-            this.rtbStatus.BackColor = System.Drawing.SystemColors.Control;
-            this.rtbStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbStatus.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.rtbStatus.Location = new System.Drawing.Point(3, 39);
-            this.rtbStatus.Name = "rtbStatus";
-            this.rtbStatus.Size = new System.Drawing.Size(372, 120);
-            this.rtbStatus.TabIndex = 2;
-            this.rtbStatus.Text = "";
             // 
             // MainForm
             // 
