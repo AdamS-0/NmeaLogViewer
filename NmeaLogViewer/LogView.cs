@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+
 namespace NmeaLogViewer {
     /// <summary>
     /// Description of LogView.
@@ -30,6 +31,7 @@ namespace NmeaLogViewer {
             InitializeComponent();
             nudLineStart.Value = 0;
             nudLineStop.Value = 10;
+            hScrlBrView.MouseWheel += hScrlBr_mouseWheel;
         }
         
         public void BindRegexes( ref List<RegexOption> rgxs, int linesNo ) {
@@ -47,8 +49,8 @@ namespace NmeaLogViewer {
             hScrlBrView.Minimum = 0;
             hScrlBrView.Maximum = linesNo;
             hScrlBrView.LargeChange = linesNo;
-            
-            hScrlBrView.MouseWheel += hScrlBr_mouseWheel;
+            _axisLimitsX.Min = hScrlBrView.Minimum;
+            _axisLimitsX.Max = hScrlBrView.Maximum;
         }
         
         bool _internalChange = false;
@@ -73,7 +75,7 @@ namespace NmeaLogViewer {
                 if ( xDst < 10 ) { xDst = 10; }
             } else {
                 /* Move */
-                xMid += ( ( MouseWheelDelta > 0 ? 1 : -1 ) * hScrlBrView.LargeChange / 4 );
+                xMid += ( ( MouseWheelDelta > 0 ? 1 : -1 ) * hScrlBrView.LargeChange / 6 );
             }
             
             if ( xDst >= _linesNo ) { xDst = _linesNo - 1; }
@@ -125,33 +127,39 @@ namespace NmeaLogViewer {
             
         }
         
-        private void TryAddDataWhenChecked( ref TreeNode node ) {
+        private void TryAddDataWhenChecked( ref TreeNode node, ref bool isFirstPlot ) {
             if ( node.Nodes.Count > 0 ) {
                 for ( int idx = 0; idx < node.Nodes.Count; idx++ ) {
                     TreeNode nodeChild = node.Nodes[idx];
-                    TryAddDataWhenChecked( ref nodeChild );
+                    TryAddDataWhenChecked( ref nodeChild, ref isFirstPlot );
                 }
             } else {
                 if ( node.Checked ) {
                     if ( node.Tag != null ) {
                         NodeSeries nodeSer = node.Tag as NodeSeries;
-                        AddNewPlot( ref nodeSer.DataX, ref nodeSer.DataY );
+                        AddNewPlot( ref nodeSer.DataX, ref nodeSer.DataY, ref isFirstPlot );
                     }
                 }
             }
         }
+        
         private void WhenCheckedChanged() {
             pCharts.Controls.Clear();
+            bool isFirstPlot = true;
+            
+            pCharts.SuspendLayout();
             
             for ( int idx = 0; idx < trVwData.Nodes.Count; idx++ ) {
                 TreeNode nodeChild = trVwData.Nodes[idx];
-                TryAddDataWhenChecked( ref nodeChild );
+                TryAddDataWhenChecked( ref nodeChild, ref isFirstPlot );
             }
+            
+            pCharts.ResumeLayout();
             
             RefreshPlots();
         }
         
-        private void AddNewPlot( ref List<float> dataX, ref List<float> dataY ) {
+        private void AddNewPlot( ref List<float> dataX, ref List<float> dataY, ref bool isFirstPlot ) {
             VisBox.Plot plot = new VisBox.Plot();
             VisBox.Series s1 = new VisBox.Series( ref dataX, ref dataY, new VisBox.Marker(Color.Yellow, ' '), new Pen( Color.Blue ) );
             
@@ -160,11 +168,27 @@ namespace NmeaLogViewer {
             
             plot.gridY.ShowLables = true;
             plot.gridY.Autoscale = true;
-            plot.AxisLimitsY.Autoscale = true;
+//            plot.AxisLimitsY.Autoscale = true;
+            
+            if ( isFirstPlot ) {
+                isFirstPlot = false;
+                plot.gridX.GridOn           = true;
+                plot.gridX.ShowLables       = true;
+                plot.gridX.Format           = "0";
+            }
+            
+            plot.gridXminor.GridOn      = true;
+            plot.gridXminor.ShowLables  = false;
+            plot.gridXminor.Autoscale   = true;
+            plot.gridXminor.ScaleFactor = 0.25f;
             
             float fMin = dataY.Min();
             float fMax = dataY.Max();
             float deltaY = Math.Abs( fMax - fMin );
+            if ( deltaY == 0.0f ) {
+                deltaY = 1;
+            }
+            
             fMin -= 0.1f*deltaY;
             fMax += 0.1f*deltaY;
             
@@ -177,9 +201,23 @@ namespace NmeaLogViewer {
             plot.BringToFront();
             plot.Resize += Plot_SizeChanged;
             plot.MouseWheel += hScrlBr_mouseWheel;
+            
+            Splitter splitter = new Splitter();
+            pCharts.Controls.Add( splitter );
+            splitter.Dock = DockStyle.Top;
+            splitter.Height = 5;
+            splitter.BringToFront();
+            
         }
         
         private void RefreshPlots() {
+            pCharts.SuspendLayout();
+            
+            foreach (Control control in pCharts.Controls) {
+                if ( control.GetType() != typeof(VisBox.Plot) ) { continue; }
+                control.SuspendLayout();
+            }
+            
             foreach (Control control in pCharts.Controls) {
                 if ( control.GetType() != typeof(VisBox.Plot) ) { continue; }
                 VisBox.Plot plot = control as VisBox.Plot;
@@ -187,6 +225,13 @@ namespace NmeaLogViewer {
                     plot.Draw();
                 } catch {}
             }
+            
+            foreach (Control control in pCharts.Controls) {
+                if ( control.GetType() != typeof(VisBox.Plot) ) { continue; }
+                control.ResumeLayout();
+            }
+            
+            pCharts.ResumeLayout();
         }
         
         void BtnRefreshClick ( object sender, EventArgs e ) {
@@ -198,7 +243,11 @@ namespace NmeaLogViewer {
         }
         
         void Plot_SizeChanged ( object sender, EventArgs e ) {
-            
+            if ( sender.GetType() != typeof( VisBox.Plot ) ) { return; }
+            try {
+                VisBox.Plot plot = sender as VisBox.Plot;
+                plot.Draw();
+            } catch {}
         }
     }
     

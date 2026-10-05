@@ -158,6 +158,12 @@ namespace NmeaLogViewer {
             int readBytes = -1;
             using ( FileStream fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) ) {
                 numBytes = fs.Length;
+                long cntrBytesRead = 0;
+                long cntrBytesTotal = numBytes;
+                long progressLast = 0;
+                prgBr1.Value = prgBr1.Maximum;
+                
+                NmeaLine nmeaLine = null;
                 while ((readBytes = fs.Read(buffer, 0, buffer.Length)) > 0) {
                     char c = ' ';
                     for ( int idx = 0; idx < readBytes; idx++ ) {
@@ -166,8 +172,13 @@ namespace NmeaLogViewer {
                         if ( c == '\n' ) {
                             idxLine += 1;
                             try {
-                                lines.Add( new NmeaLine( idxLine, sbLine.ToString(), ref cntrs ) );
-                            } catch {}
+                                nmeaLine = new NmeaLine( idxLine, sbLine.ToString(), ref cntrs );
+                                if ( nmeaLine != null ) {
+                                    if ( nmeaLine.Nmea.Length > 10 ) {
+                                        lines.Add( nmeaLine );
+                                    }
+                                }
+                            } catch (Exception ex) {  }
                             sbLine.Clear();
                         }
                         
@@ -180,6 +191,15 @@ namespace NmeaLogViewer {
                                 sbLine.Append( strRet.Substring( idxLastDollar ) );
                             }
                         }
+                    }
+                    
+                    cntrBytesRead += readBytes;
+                    long progress = ( (long)cntrBytesRead * (long)prgBr1.Maximum ) / (long)cntrBytesTotal;
+    
+                    if ( progress != progressLast ) {
+                        progressLast = (int)progress;
+                        prgBr1.Value = (int)progress;
+    //                    bgwrk1.ReportProgress( progress );
                     }
                 }
             }
@@ -233,8 +253,7 @@ namespace NmeaLogViewer {
                 if ( nmeaLine.LineLength == 0 ) { continue; }
                 
                 foreach ( RegexOption rgx in rgxs ) {
-//                    if ( !nmeaLine.Nmea.Contains( rgx.NmeName ) ) { continue; }
-                    if ( !nmeaLine.Nmea.StartsWith( rgx.NmeName, StringComparison.Ordinal ) ) { continue; }
+                    if ( nmeaLine.Nmea.IndexOf( rgx.NmeName, StringComparison.Ordinal ) == -1 ) { continue; }
                     
                     Match m = rgx.rx.Match( nmeaLine.Nmea );
                     
@@ -262,7 +281,6 @@ namespace NmeaLogViewer {
                 if ( progress != progressLast ) {
                     progressLast = (int)progress;
                     prgBr1.Value = (int)progress;
-//                    bgwrk1.ReportProgress( progress );
                 }
                 
             }
@@ -276,7 +294,6 @@ namespace NmeaLogViewer {
                                 ts.Milliseconds);
             writeStatus( "Proceeded in time: " + strTElapsed + ".\r\n", clear: false );
         }
-        
         
         private void bgwrk1_DoWork ( object sender, DoWorkEventArgs e ) {
             prgBr1.Value = 0;
