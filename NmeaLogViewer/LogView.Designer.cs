@@ -51,9 +51,9 @@ namespace NmeaLogViewer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("$GPGGA");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("$GPTXT");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("$GPGLL");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("$GPGGA");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("$GPTXT");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("$GPGLL");
             this.grpBxDataSelector = new System.Windows.Forms.GroupBox();
             this.trVwData = new System.Windows.Forms.TreeView();
             this.grpBxOptions = new System.Windows.Forms.GroupBox();
@@ -96,16 +96,16 @@ namespace NmeaLogViewer
             this.trVwData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trVwData.Location = new System.Drawing.Point(3, 16);
             this.trVwData.Name = "trVwData";
-            treeNode4.Name = "Node0";
-            treeNode4.Text = "$GPGGA";
-            treeNode5.Name = "Node1";
-            treeNode5.Text = "$GPTXT";
-            treeNode6.Name = "Node2";
-            treeNode6.Text = "$GPGLL";
+            treeNode1.Name = "Node0";
+            treeNode1.Text = "$GPGGA";
+            treeNode2.Name = "Node1";
+            treeNode2.Text = "$GPTXT";
+            treeNode3.Name = "Node2";
+            treeNode3.Text = "$GPGLL";
             this.trVwData.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5,
-            treeNode6});
+            treeNode1,
+            treeNode2,
+            treeNode3});
             this.trVwData.Size = new System.Drawing.Size(104, 336);
             this.trVwData.TabIndex = 0;
             this.trVwData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TrVwDataAfterSelect);

@@ -70,12 +70,12 @@ namespace NmeaLogViewer {
             
             if ( LCtrlPressed ) {
                 /* Zoom in/out */
-                if ( MouseWheelDelta > 0 )  { xDst = ( xDst * 11 ) / 10; }
+                if ( MouseWheelDelta < 0 )  { xDst = ( xDst * 11 ) / 10; }
                 else                        { xDst = ( xDst *  9 ) / 10; }
                 if ( xDst < 10 ) { xDst = 10; }
             } else {
                 /* Move */
-                xMid += ( ( MouseWheelDelta > 0 ? 1 : -1 ) * hScrlBrView.LargeChange / 6 );
+                xMid += ( ( MouseWheelDelta > 0 ? -1 : 1 ) * hScrlBrView.LargeChange / 6 );
             }
             
             if ( xDst >= _linesNo ) { xDst = _linesNo - 1; }
@@ -102,23 +102,35 @@ namespace NmeaLogViewer {
         
         
         void NudLineStartValueChanged ( object sender, EventArgs e ) {
-//            _axisLimitsX.Min = (float)(nudLineStart.Value);
-//            _zoomBar.Left = _axisLimitsX.Min;
-//            if ( !internalChange ) { RefreshPlots(); }
+//            if ( !_internalChange ) {
+//                _internalChange = true;
+//                _axisLimitsX.Min = (float)(nudLineStart.Value);
+//                hScrlBrView.Value = (int)_axisLimitsX.Min;
+//                hScrlBrView.LargeChange = (int)_axisLimitsX.Max - (int)_axisLimitsX.Min;
+//                RefreshPlots();
+//                _internalChange = false;
+//            }
         }
         
         void NudLineStopValueChanged ( object sender, EventArgs e ) {
-//            _axisLimitsX.Max = (float)(nudLineStop.Value);
-//            _zoomBar.Right = _axisLimitsX.Max;
-//            if ( !internalChange ) { RefreshPlots(); }
+//            if ( !_internalChange ) {
+//                _internalChange = true;
+//                _axisLimitsX.Max = (float)(nudLineStop.Value);
+//                hScrlBrView.Value = (int)_axisLimitsX.Min;
+//                hScrlBrView.LargeChange = (int)_axisLimitsX.Max - (int)_axisLimitsX.Min;
+//                RefreshPlots();
+//                _internalChange = false;
+//            }
         }
         
         void HScrlBrViewValueChanged(object sender, EventArgs e) {
-            _axisLimitsX.Min = (float)( hScrlBrView.Value );
-            _axisLimitsX.Max = _axisLimitsX.Min + (float)( hScrlBrView.LargeChange );
-            try { nudLineStart.Value = (int)_axisLimitsX.Min; } catch {}
-            try { nudLineStop .Value = (int)_axisLimitsX.Max; } catch {}
-            if ( !_internalChange ) { RefreshPlots(); }
+            if ( !_internalChange ) {
+                _axisLimitsX.Min = (float)( hScrlBrView.Value );
+                _axisLimitsX.Max = _axisLimitsX.Min + (float)( hScrlBrView.LargeChange );
+                try { nudLineStart.Value = (int)_axisLimitsX.Min; } catch {}
+                try { nudLineStop .Value = (int)_axisLimitsX.Max; } catch {}
+                if ( !_internalChange ) { RefreshPlots(); }
+            }
         }
         
         
@@ -163,11 +175,12 @@ namespace NmeaLogViewer {
             VisBox.Plot plot = new VisBox.Plot();
             VisBox.Series s1 = new VisBox.Series( ref dataX, ref dataY, new VisBox.Marker(Color.Yellow, ' '), new Pen( Color.Blue ) );
             
-            plot.AxisLimitsX = _axisLimitsX;
-            plot.gridX.Autoscale = true;
+            plot.AxisLimitsX        = _axisLimitsX;
+            plot.gridX.Autoscale    = true;
             
-            plot.gridY.ShowLables = true;
-            plot.gridY.Autoscale = true;
+            plot.gridY.Format       = "0.00";
+            plot.gridY.ShowLables   = true;
+            plot.gridY.Autoscale    = true;
 //            plot.AxisLimitsY.Autoscale = true;
             
             if ( isFirstPlot ) {
