@@ -41,6 +41,8 @@ namespace NmeaLogViewer {
             if ( clear ) { rtbStatus.Text = ""; }
             
             rtbStatus.Text += strStatus;
+            rtbStatus.SelectionStart = rtbStatus.Text.Length;
+            rtbStatus.ScrollToCaret();
         }
         
         void BtnLoadlogClick ( object sender, EventArgs e ) {
@@ -68,7 +70,7 @@ namespace NmeaLogViewer {
         }
         
         void BtnNewViewClick ( object sender, EventArgs e ) {
-            LogView logViewWindow = new LogView();
+            LogView logViewWindow = new LogView(txtBxLogFilename.Text);
             logViewWindow.BindRegexes( ref _rgxs, _lines.Count );
             logViewWindow.Show();
         }

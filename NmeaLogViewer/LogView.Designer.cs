@@ -24,7 +24,7 @@ namespace NmeaLogViewer
         private System.Windows.Forms.NumericUpDown nudLineStart;
         private System.Windows.Forms.TreeView trVwData;
         private System.Windows.Forms.Panel pCharts;
-        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnReload;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
@@ -51,15 +51,12 @@ namespace NmeaLogViewer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("$GPGGA");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("$GPTXT");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("$GPGLL");
             this.grpBxDataSelector = new System.Windows.Forms.GroupBox();
             this.trVwData = new System.Windows.Forms.TreeView();
             this.grpBxOptions = new System.Windows.Forms.GroupBox();
             this.hScrlBrView = new System.Windows.Forms.HScrollBar();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnReload = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lblLogStop = new System.Windows.Forms.Label();
             this.nudLineStop = new System.Windows.Forms.NumericUpDown();
@@ -96,18 +93,9 @@ namespace NmeaLogViewer
             this.trVwData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trVwData.Location = new System.Drawing.Point(3, 16);
             this.trVwData.Name = "trVwData";
-            treeNode1.Name = "Node0";
-            treeNode1.Text = "$GPGGA";
-            treeNode2.Name = "Node1";
-            treeNode2.Text = "$GPTXT";
-            treeNode3.Name = "Node2";
-            treeNode3.Text = "$GPGLL";
-            this.trVwData.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3});
             this.trVwData.Size = new System.Drawing.Size(104, 336);
             this.trVwData.TabIndex = 0;
+            this.trVwData.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TrVwDataAfterCheck);
             this.trVwData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TrVwDataAfterSelect);
             // 
             // grpBxOptions
@@ -135,22 +123,22 @@ namespace NmeaLogViewer
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.btnRefresh);
+            this.panel3.Controls.Add(this.btnReload);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(71, 16);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(323, 23);
             this.panel3.TabIndex = 8;
             // 
-            // btnRefresh
+            // btnReload
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(3, 0);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 5;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.BtnRefreshClick);
+            this.btnReload.Location = new System.Drawing.Point(3, 0);
+            this.btnReload.Name = "btnReload";
+            this.btnReload.Size = new System.Drawing.Size(75, 23);
+            this.btnReload.TabIndex = 5;
+            this.btnReload.Text = "Reload";
+            this.btnReload.UseVisualStyleBackColor = true;
+            this.btnReload.Click += new System.EventHandler(this.BtnRefreshClick);
             // 
             // panel2
             // 
@@ -266,6 +254,7 @@ namespace NmeaLogViewer
             this.Controls.Add(this.grpBxOptions);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.grpBxDataSelector);
+            this.Icon = global::NmeaLogViewer.Resource1.icon1;
             this.Name = "LogView";
             this.Padding = new System.Windows.Forms.Padding(3);
             this.Text = "LogView";

@@ -117,4 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="rtbRegexes.ToolTip" xml:space="preserve">
+    <value>List of regexes to be used during Parsing logs.
+Each line is a new regex, syntax:
+{const sequence unique name}&lt;={regex with named groups}
+
+e.g.
+$GPGGA&lt;=\$GPGGA,(?&lt;Utc&gt;.*?),(?&lt;Lat&gt;.*?),N,(?&lt;Lon&gt;.*?),E,(?&lt;Fix&gt;.*?),(?&lt;Sat&gt;.*?),(?&lt;Dop&gt;.*?),(?&lt;Height&gt;.*?),M,(?&lt;Geo&gt;.*?),.*?\*</value>
+  </data>
 </root>

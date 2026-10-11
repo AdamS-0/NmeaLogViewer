@@ -31,6 +31,7 @@ namespace NmeaLogViewer
         private System.Windows.Forms.Button btnParseLog;
         private System.Windows.Forms.ProgressBar prgBr1;
         private System.Windows.Forms.RichTextBox rtbStatus;
+        private System.Windows.Forms.ToolTip toolTip1;
         
         /// <summary>
         /// Disposes resources used by the form.
@@ -53,12 +54,11 @@ namespace NmeaLogViewer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("$GPGGA");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("$GPTXT");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("$GPGLL");
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.grpBxInput = new System.Windows.Forms.GroupBox();
-            this.btnParseLog = new System.Windows.Forms.Button();
             this.btnNewView = new System.Windows.Forms.Button();
+            this.btnParseLog = new System.Windows.Forms.Button();
             this.btnLoadlog = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txtBxLogFilename = new System.Windows.Forms.TextBox();
@@ -73,6 +73,7 @@ namespace NmeaLogViewer
             this.trVwData = new System.Windows.Forms.TreeView();
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitter2 = new System.Windows.Forms.Splitter();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpBxInput.SuspendLayout();
             this.panel1.SuspendLayout();
             this.grpBxStats.SuspendLayout();
@@ -95,17 +96,6 @@ namespace NmeaLogViewer
             this.grpBxInput.TabStop = false;
             this.grpBxInput.Text = "Log";
             // 
-            // btnParseLog
-            // 
-            this.btnParseLog.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnParseLog.Location = new System.Drawing.Point(78, 41);
-            this.btnParseLog.Name = "btnParseLog";
-            this.btnParseLog.Size = new System.Drawing.Size(75, 25);
-            this.btnParseLog.TabIndex = 3;
-            this.btnParseLog.Text = "Parse log";
-            this.btnParseLog.UseVisualStyleBackColor = true;
-            this.btnParseLog.Click += new System.EventHandler(this.BtnParseLogClick);
-            // 
             // btnNewView
             // 
             this.btnNewView.Dock = System.Windows.Forms.DockStyle.Left;
@@ -114,8 +104,21 @@ namespace NmeaLogViewer
             this.btnNewView.Size = new System.Drawing.Size(75, 25);
             this.btnNewView.TabIndex = 2;
             this.btnNewView.Text = "New view";
+            this.toolTip1.SetToolTip(this.btnNewView, "Open new LogView with decoded by regexes datasets");
             this.btnNewView.UseVisualStyleBackColor = true;
             this.btnNewView.Click += new System.EventHandler(this.BtnNewViewClick);
+            // 
+            // btnParseLog
+            // 
+            this.btnParseLog.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnParseLog.Location = new System.Drawing.Point(78, 41);
+            this.btnParseLog.Name = "btnParseLog";
+            this.btnParseLog.Size = new System.Drawing.Size(75, 25);
+            this.btnParseLog.TabIndex = 3;
+            this.btnParseLog.Text = "Parse log";
+            this.toolTip1.SetToolTip(this.btnParseLog, "Process previously Loaded log file.\r\nWill use list of regexes");
+            this.btnParseLog.UseVisualStyleBackColor = true;
+            this.btnParseLog.Click += new System.EventHandler(this.BtnParseLogClick);
             // 
             // btnLoadlog
             // 
@@ -125,6 +128,7 @@ namespace NmeaLogViewer
             this.btnLoadlog.Size = new System.Drawing.Size(75, 25);
             this.btnLoadlog.TabIndex = 1;
             this.btnLoadlog.Text = "Load log";
+            this.toolTip1.SetToolTip(this.btnLoadlog, "Load log file and get only correct NMEA messages. Just a first step");
             this.btnLoadlog.UseVisualStyleBackColor = true;
             this.btnLoadlog.Click += new System.EventHandler(this.BtnLoadlogClick);
             // 
@@ -147,6 +151,7 @@ namespace NmeaLogViewer
             this.txtBxLogFilename.Name = "txtBxLogFilename";
             this.txtBxLogFilename.Size = new System.Drawing.Size(322, 20);
             this.txtBxLogFilename.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.txtBxLogFilename, "Path to a log file; drag&drop enabled");
             this.txtBxLogFilename.DragDrop += new System.Windows.Forms.DragEventHandler(this.TxtBxLogFilenameDragDrop);
             this.txtBxLogFilename.DragEnter += new System.Windows.Forms.DragEventHandler(this.TxtBxLogFilenameDragEnter);
             // 
@@ -170,7 +175,7 @@ namespace NmeaLogViewer
             this.grpBxStats.Size = new System.Drawing.Size(378, 162);
             this.grpBxStats.TabIndex = 1;
             this.grpBxStats.TabStop = false;
-            this.grpBxStats.Text = "Stats";
+            this.grpBxStats.Text = "Status";
             // 
             // rtbStatus
             // 
@@ -196,9 +201,9 @@ namespace NmeaLogViewer
             // 
             this.grpBxRgxs.Controls.Add(this.rtbRegexes);
             this.grpBxRgxs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpBxRgxs.Location = new System.Drawing.Point(110, 0);
+            this.grpBxRgxs.Location = new System.Drawing.Point(136, 0);
             this.grpBxRgxs.Name = "grpBxRgxs";
-            this.grpBxRgxs.Size = new System.Drawing.Size(268, 189);
+            this.grpBxRgxs.Size = new System.Drawing.Size(242, 189);
             this.grpBxRgxs.TabIndex = 2;
             this.grpBxRgxs.TabStop = false;
             this.grpBxRgxs.Text = "Regexes";
@@ -208,9 +213,11 @@ namespace NmeaLogViewer
             this.rtbRegexes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbRegexes.Location = new System.Drawing.Point(3, 16);
             this.rtbRegexes.Name = "rtbRegexes";
-            this.rtbRegexes.Size = new System.Drawing.Size(262, 170);
+            this.rtbRegexes.Size = new System.Drawing.Size(236, 170);
             this.rtbRegexes.TabIndex = 0;
-            this.rtbRegexes.Text = "";
+            this.rtbRegexes.Text = "$GPGGA<=\\$GPGGA,(?<Utc>.*?),(?<Lat>.*?),N,(?<Lon>.*?),E,(?<Fix>.*?),(?<Sat>.*?),(" +
+    "?<Dop>.*?),(?<Height>.*?),M,(?<Geo>.*?),.*?\\*\n";
+            this.toolTip1.SetToolTip(this.rtbRegexes, resources.GetString("rtbRegexes.ToolTip"));
             this.rtbRegexes.TextChanged += new System.EventHandler(this.RtbRegexesTextChanged);
             // 
             // splitter1
@@ -228,10 +235,10 @@ namespace NmeaLogViewer
             this.grpBxDataSelector.Dock = System.Windows.Forms.DockStyle.Left;
             this.grpBxDataSelector.Location = new System.Drawing.Point(0, 0);
             this.grpBxDataSelector.Name = "grpBxDataSelector";
-            this.grpBxDataSelector.Size = new System.Drawing.Size(107, 189);
+            this.grpBxDataSelector.Size = new System.Drawing.Size(133, 189);
             this.grpBxDataSelector.TabIndex = 4;
             this.grpBxDataSelector.TabStop = false;
-            this.grpBxDataSelector.Text = "Data Selector";
+            this.grpBxDataSelector.Text = "Preview";
             // 
             // trVwData
             // 
@@ -239,18 +246,9 @@ namespace NmeaLogViewer
             this.trVwData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trVwData.Location = new System.Drawing.Point(3, 16);
             this.trVwData.Name = "trVwData";
-            treeNode4.Name = "Node0";
-            treeNode4.Text = "$GPGGA";
-            treeNode5.Name = "Node1";
-            treeNode5.Text = "$GPTXT";
-            treeNode6.Name = "Node2";
-            treeNode6.Text = "$GPGLL";
-            this.trVwData.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5,
-            treeNode6});
-            this.trVwData.Size = new System.Drawing.Size(101, 170);
+            this.trVwData.Size = new System.Drawing.Size(127, 170);
             this.trVwData.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.trVwData, "Just a preview of correctly detected regexes, with fields");
             // 
             // panel2
             // 
@@ -265,7 +263,7 @@ namespace NmeaLogViewer
             // 
             // splitter2
             // 
-            this.splitter2.Location = new System.Drawing.Point(107, 0);
+            this.splitter2.Location = new System.Drawing.Point(133, 0);
             this.splitter2.Name = "splitter2";
             this.splitter2.Size = new System.Drawing.Size(3, 189);
             this.splitter2.TabIndex = 5;
@@ -280,6 +278,7 @@ namespace NmeaLogViewer
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.grpBxStats);
             this.Controls.Add(this.grpBxInput);
+            this.Icon = global::NmeaLogViewer.Resource1.icon1;
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(3);
             this.Text = "NmeaLogViewer";

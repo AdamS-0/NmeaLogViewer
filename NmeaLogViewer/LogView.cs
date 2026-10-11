@@ -27,8 +27,9 @@ namespace NmeaLogViewer {
         VisBox.AxisLimits _axisLimitsX = new VisBox.AxisLimits();
         int _linesNo = 0;
         
-        public LogView() {
+        public LogView(string fileName = "") {
             InitializeComponent();
+            Text = "LogView: " + fileName;
             nudLineStart.Value = 0;
             nudLineStop.Value = 10;
             hScrlBrView.MouseWheel += hScrlBr_mouseWheel;
@@ -133,7 +134,20 @@ namespace NmeaLogViewer {
             }
         }
         
-        
+        void PropagateCheck(TreeNode node, bool newState) {
+            for ( int idxChild = 0; idxChild < node.Nodes.Count; idxChild++ ) {
+                node.Nodes[idxChild].Checked = newState;
+                if ( node.Nodes[idxChild].Nodes.Count > 0 ) {
+                    PropagateCheck(node.Nodes[idxChild], newState);
+                }
+            }
+        }
+        void TrVwDataAfterCheck(object sender, TreeViewEventArgs e) {
+//            if ( e.Action != TreeViewAction.Unknown ) {
+                PropagateCheck( e.Node, e.Node.Checked );
+                WhenCheckedChanged();
+//            }
+        }
         
         void TrVwDataAfterSelect ( object sender, TreeViewEventArgs e ) {
             
@@ -262,6 +276,7 @@ namespace NmeaLogViewer {
                 plot.Draw();
             } catch {}
         }
+
     }
     
     public class NodeSeries {
