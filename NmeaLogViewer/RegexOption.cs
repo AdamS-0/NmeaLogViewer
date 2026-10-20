@@ -12,7 +12,16 @@ using System.Text.RegularExpressions;
 
 namespace NmeaLogViewer {
     // [NmeName]<=[pattern]
-    public class RegexOption {
+    public class RegexOption : IDisposable {
+        
+        public enum RegexOptionParseStatus {
+            Ok,
+            MissingName,
+            MissingPattern,
+            ArrowNotFound,
+            Error
+        }
+        
         public Regex rx = new Regex("");
         public string NmeName = "";
         
@@ -25,12 +34,25 @@ namespace NmeaLogViewer {
             this.rx = new Regex( pattern );
         }
         
-        static public RegexOption parseLine(string line) {
+        static public RegexOption parseLine(string line, out RegexOptionParseStatus status) {
+            status = RegexOptionParseStatus.Error;
             RegexOption rgo = new RegexOption();
             try {
+                int idxArrow = line.IndexOf( "<=" );
+                if ( idxArrow < 0 ) {
+                    status = RegexOptionParseStatus.ArrowNotFound;
+                    return null;
+                } else if ( idxArrow == 0 ) {
+                    status = RegexOptionParseStatus.MissingName;
+                    return null;
+                } else if ( idxArrow + 2 >= line.Length ) {
+                    status = RegexOptionParseStatus.MissingPattern;
+                    return null;
+                }
+                
                 Regex rx = new Regex("(?<NmeName>.*?)<=(?<rgxPattern>.*)");
                 Match m = rx.Match( line );
-                if ( !m.Success ) { return null; }
+                if ( !m.Success ) {  return null; }
                 
                 rgo.NmeName = m.Groups["NmeName"].ToString();
                 rgo.rx = new Regex( m.Groups["rgxPattern"].Value, RegexOptions.Compiled );
@@ -42,10 +64,30 @@ namespace NmeaLogViewer {
                     rgo.Values.Add( new List<float>() );
                 }
                 
+                status = RegexOptionParseStatus.Ok;
                 return rgo;
             }
             catch {}
             return null;
         }
+
+        #region IDisposable implementation
+
+        public void Dispose() {
+            rx = null;
+            NmeName = null;
+            if ( LineIds != null ) { LineIds.Clear(); LineIds = null; }
+            if ( Values != null ) {
+                foreach( List<float> valList in Values ) {
+                    if ( valList != null ) {
+                        valList.Clear();
+                    }
+                }
+                Values.Clear();
+                Values = null;
+            }
+        }
+
+        #endregion
     }
 }

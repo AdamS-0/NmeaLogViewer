@@ -73,8 +73,14 @@ namespace NmeaLogViewer {
             LogView logViewWindow = new LogView(txtBxLogFilename.Text);
             logViewWindow.BindRegexes( ref _rgxs, _lines.Count );
             logViewWindow.Show();
+            logViewWindow.RequestRegexes += logViewWindow_RequestRegexes;
         }
-        
+
+        void logViewWindow_RequestRegexes(LogView sender) {
+            if ( sender != null ) {
+                sender.BindRegexes( ref _rgxs, _lines.Count );
+            }
+        }
         void RtbRegexesTextChanged ( object sender, EventArgs e ) {
             _rgxs = ProcessRegexes( rtbRegexes.Text );
         }
@@ -101,10 +107,22 @@ namespace NmeaLogViewer {
             
             List<RegexOption> rgxs = new List<RegexOption>();
             foreach ( string line in rgxsLines ) {
-                RegexOption rgo = RegexOption.parseLine( line );
+                if ( line == null ) { continue; }
+                if ( line.Length == 0 ) { continue; }
+                RegexOption.RegexOptionParseStatus status;
+                
+                RegexOption rgo = RegexOption.parseLine( line, out status );
                 if ( rgo == null ) {
                     /* Error during parsing */
-                    writeStatus( "Error during parsing regex: '" + line + "'.\r\n", clear: false );
+                    string strErr = "Error during parsing regex: '" + line + "'.";
+                    switch ( status ) {
+                        case RegexOption.RegexOptionParseStatus.MissingName   : strErr += " Missing [Name]."; break;
+                        case RegexOption.RegexOptionParseStatus.MissingPattern: strErr += " Missing [Pattern]."; break;
+                        case RegexOption.RegexOptionParseStatus.ArrowNotFound : strErr += " \"<=\" not found."; break;
+                        default: break;
+                    }
+                    strErr += "\r\n";
+                    writeStatus( strErr, clear: false );
                 } else {
                     rgxs.Add( rgo );
                 }
@@ -137,25 +155,42 @@ namespace NmeaLogViewer {
         
         
         
+        public static long CountLinesInFile(string filePath) {
+            byte[]  buffer          = new byte[4096];
+            long    cntrLines       = 0;
+            int     cntrReadBytes;
+
+            using (FileStream fs = File.OpenRead(filePath)) {
+                while ((cntrReadBytes = fs.Read(buffer, 0, buffer.Length)) > 0) {
+                    for (int i = 0; i < cntrReadBytes; i++) {
+                        if (buffer[i] == 10) {
+                            cntrLines++;
+                        }
+                    }
+                }
+            }
+            return cntrLines + 1;
+        }
+        
         List<NmeaLine> ParseLogFile(string filePath, ref NmeaCntr cntrs) {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            List<NmeaLine> lines = new List<NmeaLine>();
+            int cntrLines = (int)CountLinesInFile(filePath);
+            writeStatus( "Found lines: " + cntrLines + ".\r\n" );
+            rtbStatus.Update();
+            
+            List<NmeaLine> lines = new List<NmeaLine>(cntrLines);
             if ( !File.Exists( filePath ) ) {
                 writeStatus( "File doe snot exists!\r\n" );
                 return lines;
             }
             
             int idxLine = 0;
-            string line = "";
-            
-            int idxSOL =  0;
-            int idxEOL = -1;
             int maxLineSize = 3*80;
             int cntrLineOverflow = 0;
             long numBytes = 0;
             
-            byte[] buffer = new byte[64 * 1024];
+            byte[] buffer = new byte[128 * 1024];
             StringBuilder sbLine = new StringBuilder();
             int readBytes = -1;
             using ( FileStream fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) ) {
@@ -180,7 +215,7 @@ namespace NmeaLogViewer {
                                         lines.Add( nmeaLine );
                                     }
                                 }
-                            } catch (Exception ex) {  }
+                            } catch {  }
                             sbLine.Clear();
                         }
                         
@@ -228,7 +263,7 @@ namespace NmeaLogViewer {
                 "  Missing CHK: " + cntrs.MissingChk + ".\r\n" +
                 "    Read time: " + strTElapsed + ".\r\n";
             
-            writeStatus( strStatus );
+            writeStatus( strStatus, clear: false );
             return lines;
         }
         
@@ -238,10 +273,27 @@ namespace NmeaLogViewer {
             sw.Start();
             
             foreach ( RegexOption rgx in rgxs ) {
-                rgx.LineIds = new List<float>();
-                rgx.Values = new List<List<float>>();
+                
+                if ( rgx.LineIds != null ) {
+                    rgx.LineIds.Clear();
+                } else {
+                    rgx.LineIds = new List<float>();
+                }
                 
                 int groupsNumber = rgx.rx.GetGroupNames().Length;
+                if ( rgx.Values == null ) {
+                    rgx.Values = new List<List<float>>( groupsNumber );
+                } else {
+                    for ( int idxListVal = 0; idxListVal < rgx.Values.Count; idxListVal++ ) {
+                        if ( rgx.Values[idxListVal] != null ) {
+                            rgx.Values[idxListVal].Clear();
+//                            rgx.Values[idxListVal] = null;
+                        }
+                    }
+                    rgx.Values.Clear();
+                    rgx.Values.TrimExcess();
+                }
+                
                 for ( int idx = 1; idx < groupsNumber; idx++ ) {
                     rgx.Values.Add( new List<float>() );
                 }
@@ -255,6 +307,7 @@ namespace NmeaLogViewer {
                 if ( nmeaLine.LineLength == 0 ) { continue; }
                 
                 foreach ( RegexOption rgx in rgxs ) {
+                    /* Look for regex name in nmeaLine */
                     if ( nmeaLine.Nmea.IndexOf( rgx.NmeName, StringComparison.Ordinal ) == -1 ) { continue; }
                     
                     Match m = rgx.rx.Match( nmeaLine.Nmea );
@@ -295,6 +348,7 @@ namespace NmeaLogViewer {
                                 ts.Seconds,
                                 ts.Milliseconds);
             writeStatus( "Proceeded in time: " + strTElapsed + ".\r\n", clear: false );
+            FillTreeViewWithRegexes( ref trVwData, ref rgxs );
         }
         
         private void bgwrk1_DoWork ( object sender, DoWorkEventArgs e ) {

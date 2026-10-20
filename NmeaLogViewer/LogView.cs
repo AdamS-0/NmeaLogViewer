@@ -22,6 +22,9 @@ namespace NmeaLogViewer {
         [DllImport("user32.dll")]
         static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
         
+        public delegate void RequestRegexesEvent(LogView sender);
+        public event RequestRegexesEvent RequestRegexes;
+        
         List<RegexOption> _rgxs = new List<RegexOption>();
         
         VisBox.AxisLimits _axisLimitsX = new VisBox.AxisLimits();
@@ -36,6 +39,8 @@ namespace NmeaLogViewer {
         }
         
         public void BindRegexes( ref List<RegexOption> rgxs, int linesNo ) {
+            if ( _rgxs != null ) { _rgxs = null; }
+            
             _rgxs = rgxs;
             MainForm.FillTreeViewWithRegexes( ref trVwData, ref _rgxs );
             
@@ -52,6 +57,24 @@ namespace NmeaLogViewer {
             hScrlBrView.LargeChange = linesNo;
             _axisLimitsX.Min = hScrlBrView.Minimum;
             _axisLimitsX.Max = hScrlBrView.Maximum;
+        }
+        
+        
+        void LogViewFormClosing(object sender, FormClosingEventArgs e) {
+              
+        }
+        
+        void LogViewFormClosed(object sender, FormClosedEventArgs e) {
+            _rgxs = null;
+            foreach (Control control in pCharts.Controls) {
+                if ( control.GetType() != typeof(VisBox.Plot) ) { continue; }
+                VisBox.Plot plot = control as VisBox.Plot;
+                try {
+                    plot.Dispose();
+                } catch {}
+            }
+            
+            this.Dispose();
         }
         
         bool _internalChange = false;
@@ -142,11 +165,15 @@ namespace NmeaLogViewer {
                 }
             }
         }
+        
+        bool nowFirstCheck = false;
         void TrVwDataAfterCheck(object sender, TreeViewEventArgs e) {
-//            if ( e.Action != TreeViewAction.Unknown ) {
-                PropagateCheck( e.Node, e.Node.Checked );
-                WhenCheckedChanged();
-//            }
+            PropagateCheck( e.Node, e.Node.Checked );
+            if ( !nowFirstCheck ) {
+//                nowFirstCheck = true;
+//                WhenCheckedChanged();
+//                nowFirstCheck = false;
+            }
         }
         
         void TrVwDataAfterSelect ( object sender, TreeViewEventArgs e ) {
@@ -170,6 +197,14 @@ namespace NmeaLogViewer {
         }
         
         private void WhenCheckedChanged() {
+            foreach (Control control in pCharts.Controls) {
+                if ( control.GetType() != typeof(VisBox.Plot) ) { continue; }
+                VisBox.Plot plot = control as VisBox.Plot;
+                try {
+                    plot.Dispose();
+                } catch {}
+            }
+            
             pCharts.Controls.Clear();
             bool isFirstPlot = true;
             
@@ -276,6 +311,11 @@ namespace NmeaLogViewer {
                 plot.Draw();
             } catch {}
         }
+        
+        void BtnSyncDataClick(object sender, EventArgs e) {
+            if ( RequestRegexes != null ) { RequestRegexes(this); }
+        }
+
 
     }
     
