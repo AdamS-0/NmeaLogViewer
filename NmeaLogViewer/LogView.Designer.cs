@@ -30,6 +30,7 @@ namespace NmeaLogViewer
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Button btnSyncData;
+        private System.Windows.Forms.CheckBox chkBxShowMarker;
         
         /// <summary>
         /// Disposes resources used by the form.
@@ -57,7 +58,9 @@ namespace NmeaLogViewer
             this.grpBxOptions = new System.Windows.Forms.GroupBox();
             this.hScrlBrView = new System.Windows.Forms.HScrollBar();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.chkBxShowMarker = new System.Windows.Forms.CheckBox();
             this.btnReload = new System.Windows.Forms.Button();
+            this.btnSyncData = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lblLogStop = new System.Windows.Forms.Label();
             this.nudLineStop = new System.Windows.Forms.NumericUpDown();
@@ -67,7 +70,6 @@ namespace NmeaLogViewer
             this.grpBxCharts = new System.Windows.Forms.GroupBox();
             this.pCharts = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.btnSyncData = new System.Windows.Forms.Button();
             this.grpBxDataSelector.SuspendLayout();
             this.grpBxOptions.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -125,24 +127,48 @@ namespace NmeaLogViewer
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.btnSyncData);
+            this.panel3.Controls.Add(this.chkBxShowMarker);
             this.panel3.Controls.Add(this.btnReload);
+            this.panel3.Controls.Add(this.btnSyncData);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(71, 16);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(323, 23);
             this.panel3.TabIndex = 8;
             // 
+            // chkBxShowMarker
+            // 
+            this.chkBxShowMarker.AutoSize = true;
+            this.chkBxShowMarker.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkBxShowMarker.Location = new System.Drawing.Point(150, 0);
+            this.chkBxShowMarker.Name = "chkBxShowMarker";
+            this.chkBxShowMarker.Size = new System.Drawing.Size(64, 23);
+            this.chkBxShowMarker.TabIndex = 7;
+            this.chkBxShowMarker.Text = "Markers";
+            this.chkBxShowMarker.UseVisualStyleBackColor = true;
+            this.chkBxShowMarker.CheckedChanged += new System.EventHandler(this.ChkBxShowMarkerCheckedChanged);
+            // 
             // btnReload
             // 
             this.btnReload.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnReload.Location = new System.Drawing.Point(0, 0);
+            this.btnReload.Location = new System.Drawing.Point(75, 0);
             this.btnReload.Name = "btnReload";
             this.btnReload.Size = new System.Drawing.Size(75, 23);
             this.btnReload.TabIndex = 5;
             this.btnReload.Text = "Reload";
             this.btnReload.UseVisualStyleBackColor = true;
             this.btnReload.Click += new System.EventHandler(this.BtnRefreshClick);
+            // 
+            // btnSyncData
+            // 
+            this.btnSyncData.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSyncData.Location = new System.Drawing.Point(0, 0);
+            this.btnSyncData.Name = "btnSyncData";
+            this.btnSyncData.Size = new System.Drawing.Size(75, 23);
+            this.btnSyncData.TabIndex = 6;
+            this.btnSyncData.Text = "Sync data";
+            this.btnSyncData.UseVisualStyleBackColor = true;
+            this.btnSyncData.Click += new System.EventHandler(this.BtnSyncDataClick);
             // 
             // panel2
             // 
@@ -249,17 +275,6 @@ namespace NmeaLogViewer
             this.splitter1.TabIndex = 3;
             this.splitter1.TabStop = false;
             // 
-            // btnSyncData
-            // 
-            this.btnSyncData.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSyncData.Location = new System.Drawing.Point(75, 0);
-            this.btnSyncData.Name = "btnSyncData";
-            this.btnSyncData.Size = new System.Drawing.Size(75, 23);
-            this.btnSyncData.TabIndex = 6;
-            this.btnSyncData.Text = "Sync data";
-            this.btnSyncData.UseVisualStyleBackColor = true;
-            this.btnSyncData.Click += new System.EventHandler(this.BtnSyncDataClick);
-            // 
             // LogView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,6 +293,7 @@ namespace NmeaLogViewer
             this.grpBxDataSelector.ResumeLayout(false);
             this.grpBxOptions.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudLineStop)).EndInit();
             this.panel1.ResumeLayout(false);

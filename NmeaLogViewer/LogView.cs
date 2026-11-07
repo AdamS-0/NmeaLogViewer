@@ -221,8 +221,14 @@ namespace NmeaLogViewer {
         }
         
         private void AddNewPlot( ref List<float> dataX, ref List<float> dataY, ref bool isFirstPlot ) {
+            if ( dataX == null ) { return; }
+            if ( dataY == null ) { return; }
+            
+            if ( dataX.Count != dataY.Count ) { return; }
+            if ( dataY.Count <= 0 ) { return; }
+            
             VisBox.Plot plot = new VisBox.Plot();
-            VisBox.Series s1 = new VisBox.Series( ref dataX, ref dataY, new VisBox.Marker(Color.Yellow, ' '), new Pen( Color.Blue ) );
+            VisBox.Series s1 = new VisBox.Series( ref dataX, ref dataY, new VisBox.Marker(Color.Red, ' '), new Pen( Color.Blue ) );
             
             plot.AxisLimitsX        = _axisLimitsX;
             plot.gridX.Autoscale    = true;
@@ -244,8 +250,14 @@ namespace NmeaLogViewer {
             plot.gridXminor.Autoscale   = true;
             plot.gridXminor.ScaleFactor = 0.25f;
             
-            float fMin = dataY.Min();
-            float fMax = dataY.Max();
+            float fMin = 0.0f;
+            float fMax = 0.0f;
+            
+            if ( dataY.Count > 0 ) {
+                fMin = dataY.Min();
+                fMax = dataY.Max();
+            }
+            
             float deltaY = Math.Abs( fMax - fMin );
             if ( deltaY == 0.0f ) {
                 deltaY = 1;
@@ -314,6 +326,21 @@ namespace NmeaLogViewer {
         
         void BtnSyncDataClick(object sender, EventArgs e) {
             if ( RequestRegexes != null ) { RequestRegexes(this); }
+        }
+        
+        
+        void ChkBxShowMarkerCheckedChanged(object sender, EventArgs e) {
+            foreach (Control control in pCharts.Controls) {
+                if ( control.GetType() != typeof(VisBox.Plot) ) { continue; }
+                VisBox.Plot plot = control as VisBox.Plot;
+                try {
+                    if ( plot.Series == null ) { continue; }
+                    foreach( VisBox.Series ser in plot.Series ) {
+                        ser.Marker.Symbol = chkBxShowMarker.Checked ? '+' : ' ';
+                    }
+                } catch {}
+            }
+            RefreshPlots();
         }
 
 

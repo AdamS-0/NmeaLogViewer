@@ -1,2 +1,2 @@
 # NmeaLogViewer
-Simple log viewer, wchich visualise data based on regex defined messages 
+Simple log viewer, which visualize data based on regex defined messages 

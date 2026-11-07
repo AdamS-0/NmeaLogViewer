@@ -22,9 +22,9 @@ namespace NmeaLogViewer {
     /// </summary>
     public partial class MainForm : Form {
         
+        private int _cntrLines = 0;
         List<NmeaLine> _lines = new List<NmeaLine>();
         NmeaCntr _cntrs = new NmeaCntr();
-        
         List<RegexOption> _rgxs = new List<RegexOption>();
         
         
@@ -71,7 +71,7 @@ namespace NmeaLogViewer {
         
         void BtnNewViewClick ( object sender, EventArgs e ) {
             LogView logViewWindow = new LogView(txtBxLogFilename.Text);
-            logViewWindow.BindRegexes( ref _rgxs, _lines.Count );
+            logViewWindow.BindRegexes( ref _rgxs, _cntrLines );
             logViewWindow.Show();
             logViewWindow.RequestRegexes += logViewWindow_RequestRegexes;
         }
@@ -209,7 +209,14 @@ namespace NmeaLogViewer {
                         if ( c == '\n' ) {
                             idxLine += 1;
                             try {
-                                nmeaLine = new NmeaLine( idxLine, sbLine.ToString(), ref cntrs );
+                                if ( chkBxSkipNmeaCheck.Checked ) {
+                                    nmeaLine = new NmeaLine();
+                                    nmeaLine.Nmea = sbLine.ToString();
+                                    nmeaLine.LineLength = nmeaLine.Nmea.Length;
+                                    nmeaLine.LineId = idxLine;
+                                } else {
+                                    nmeaLine = new NmeaLine( idxLine, sbLine.ToString(), ref cntrs );
+                                }
                                 if ( nmeaLine != null ) {
                                     if ( nmeaLine.Nmea.Length > 10 ) {
                                         lines.Add( nmeaLine );
@@ -242,6 +249,8 @@ namespace NmeaLogViewer {
             }
             
             sw.Stop();
+            _cntrLines = idxLine;
+            
             TimeSpan ts = sw.Elapsed;
             string strTElapsed = string.Format("{0:00}:{1:00}:{2:00}.{3:000}",
                                 (int)ts.TotalHours,

@@ -32,6 +32,7 @@ namespace NmeaLogViewer
         private System.Windows.Forms.ProgressBar prgBr1;
         private System.Windows.Forms.RichTextBox rtbStatus;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox chkBxSkipNmeaCheck;
         
         /// <summary>
         /// Disposes resources used by the form.
@@ -74,6 +75,7 @@ namespace NmeaLogViewer
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.chkBxSkipNmeaCheck = new System.Windows.Forms.CheckBox();
             this.grpBxInput.SuspendLayout();
             this.panel1.SuspendLayout();
             this.grpBxStats.SuspendLayout();
@@ -84,6 +86,7 @@ namespace NmeaLogViewer
             // 
             // grpBxInput
             // 
+            this.grpBxInput.Controls.Add(this.chkBxSkipNmeaCheck);
             this.grpBxInput.Controls.Add(this.btnNewView);
             this.grpBxInput.Controls.Add(this.btnParseLog);
             this.grpBxInput.Controls.Add(this.btnLoadlog);
@@ -268,6 +271,15 @@ namespace NmeaLogViewer
             this.splitter2.Size = new System.Drawing.Size(3, 189);
             this.splitter2.TabIndex = 5;
             this.splitter2.TabStop = false;
+            // 
+            // chkBxSkipNmeaCheck
+            // 
+            this.chkBxSkipNmeaCheck.Location = new System.Drawing.Point(234, 42);
+            this.chkBxSkipNmeaCheck.Name = "chkBxSkipNmeaCheck";
+            this.chkBxSkipNmeaCheck.Size = new System.Drawing.Size(114, 24);
+            this.chkBxSkipNmeaCheck.TabIndex = 4;
+            this.chkBxSkipNmeaCheck.Text = "Skip NMEA check";
+            this.chkBxSkipNmeaCheck.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

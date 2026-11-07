@@ -121,7 +121,7 @@ namespace NmeaLogViewer {
                 break;
             }
             
-            if ( idxDollar  < 0 ) {  cntrs.MissingDollar++; return false; }
+            if ( idxDollar < 0 ) {  cntrs.MissingDollar++; return false; }
             
             for ( ; idx < nmeaLine.Length; idx++ ) {
                 if ( nmeaLine[idx] != '*' ) { continue; }
@@ -129,7 +129,7 @@ namespace NmeaLogViewer {
                 break;
             }
             
-            if ( idxDollar  >= idxAsterix   ) { cntrs.IncorrectSyntax++; return false; }
+            if ( idxDollar >= idxAsterix    ) { cntrs.IncorrectSyntax++; return false; }
             if ( idxAsterix < 0             ) { cntrs.MissingAsterix++; return false; }
             
             byte checksum = 0;
