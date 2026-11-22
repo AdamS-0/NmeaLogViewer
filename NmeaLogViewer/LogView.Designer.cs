@@ -24,7 +24,7 @@ namespace NmeaLogViewer
         private System.Windows.Forms.NumericUpDown nudLineStart;
         private System.Windows.Forms.TreeView trVwData;
         private System.Windows.Forms.Panel pCharts;
-        private System.Windows.Forms.Button btnReload;
+        private System.Windows.Forms.Button btnShowData;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
@@ -59,7 +59,7 @@ namespace NmeaLogViewer
             this.hScrlBrView = new System.Windows.Forms.HScrollBar();
             this.panel3 = new System.Windows.Forms.Panel();
             this.chkBxShowMarker = new System.Windows.Forms.CheckBox();
-            this.btnReload = new System.Windows.Forms.Button();
+            this.btnShowData = new System.Windows.Forms.Button();
             this.btnSyncData = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lblLogStop = new System.Windows.Forms.Label();
@@ -83,6 +83,8 @@ namespace NmeaLogViewer
             // grpBxDataSelector
             // 
             this.grpBxDataSelector.Controls.Add(this.trVwData);
+            this.grpBxDataSelector.Controls.Add(this.btnShowData);
+            this.grpBxDataSelector.Controls.Add(this.btnSyncData);
             this.grpBxDataSelector.Dock = System.Windows.Forms.DockStyle.Left;
             this.grpBxDataSelector.Location = new System.Drawing.Point(3, 3);
             this.grpBxDataSelector.Name = "grpBxDataSelector";
@@ -95,9 +97,9 @@ namespace NmeaLogViewer
             // 
             this.trVwData.CheckBoxes = true;
             this.trVwData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trVwData.Location = new System.Drawing.Point(3, 16);
+            this.trVwData.Location = new System.Drawing.Point(3, 62);
             this.trVwData.Name = "trVwData";
-            this.trVwData.Size = new System.Drawing.Size(104, 336);
+            this.trVwData.Size = new System.Drawing.Size(104, 290);
             this.trVwData.TabIndex = 0;
             this.trVwData.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TrVwDataAfterCheck);
             this.trVwData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TrVwDataAfterSelect);
@@ -128,8 +130,6 @@ namespace NmeaLogViewer
             // panel3
             // 
             this.panel3.Controls.Add(this.chkBxShowMarker);
-            this.panel3.Controls.Add(this.btnReload);
-            this.panel3.Controls.Add(this.btnSyncData);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(71, 16);
             this.panel3.Name = "panel3";
@@ -140,7 +140,7 @@ namespace NmeaLogViewer
             // 
             this.chkBxShowMarker.AutoSize = true;
             this.chkBxShowMarker.Dock = System.Windows.Forms.DockStyle.Left;
-            this.chkBxShowMarker.Location = new System.Drawing.Point(150, 0);
+            this.chkBxShowMarker.Location = new System.Drawing.Point(0, 0);
             this.chkBxShowMarker.Name = "chkBxShowMarker";
             this.chkBxShowMarker.Size = new System.Drawing.Size(64, 23);
             this.chkBxShowMarker.TabIndex = 7;
@@ -148,23 +148,23 @@ namespace NmeaLogViewer
             this.chkBxShowMarker.UseVisualStyleBackColor = true;
             this.chkBxShowMarker.CheckedChanged += new System.EventHandler(this.ChkBxShowMarkerCheckedChanged);
             // 
-            // btnReload
+            // btnShowData
             // 
-            this.btnReload.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnReload.Location = new System.Drawing.Point(75, 0);
-            this.btnReload.Name = "btnReload";
-            this.btnReload.Size = new System.Drawing.Size(75, 23);
-            this.btnReload.TabIndex = 5;
-            this.btnReload.Text = "Reload";
-            this.btnReload.UseVisualStyleBackColor = true;
-            this.btnReload.Click += new System.EventHandler(this.BtnRefreshClick);
+            this.btnShowData.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnShowData.Location = new System.Drawing.Point(3, 39);
+            this.btnShowData.Name = "btnShowData";
+            this.btnShowData.Size = new System.Drawing.Size(104, 23);
+            this.btnShowData.TabIndex = 5;
+            this.btnShowData.Text = "Show data";
+            this.btnShowData.UseVisualStyleBackColor = true;
+            this.btnShowData.Click += new System.EventHandler(this.BtnRefreshClick);
             // 
             // btnSyncData
             // 
-            this.btnSyncData.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSyncData.Location = new System.Drawing.Point(0, 0);
+            this.btnSyncData.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnSyncData.Location = new System.Drawing.Point(3, 16);
             this.btnSyncData.Name = "btnSyncData";
-            this.btnSyncData.Size = new System.Drawing.Size(75, 23);
+            this.btnSyncData.Size = new System.Drawing.Size(104, 23);
             this.btnSyncData.TabIndex = 6;
             this.btnSyncData.Text = "Sync data";
             this.btnSyncData.UseVisualStyleBackColor = true;

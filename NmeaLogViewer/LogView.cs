@@ -180,17 +180,18 @@ namespace NmeaLogViewer {
             
         }
         
-        private void TryAddDataWhenChecked( ref TreeNode node, ref bool isFirstPlot ) {
+        private void TryAddDataWhenChecked( ref TreeNode node, ref bool isFirstPlot, string strDataTitle = "" ) {
             if ( node.Nodes.Count > 0 ) {
                 for ( int idx = 0; idx < node.Nodes.Count; idx++ ) {
                     TreeNode nodeChild = node.Nodes[idx];
-                    TryAddDataWhenChecked( ref nodeChild, ref isFirstPlot );
+                    TryAddDataWhenChecked( ref nodeChild, ref isFirstPlot,
+                                          strDataTitle + ( strDataTitle.Length == 0 ? "" : " - " ) + node.Text );
                 }
             } else {
                 if ( node.Checked ) {
                     if ( node.Tag != null ) {
                         NodeSeries nodeSer = node.Tag as NodeSeries;
-                        AddNewPlot( ref nodeSer.DataX, ref nodeSer.DataY, ref isFirstPlot );
+                        AddNewPlot( ref nodeSer.DataX, ref nodeSer.DataY, ref isFirstPlot, strDataTitle + " - " + node.Text );
                     }
                 }
             }
@@ -220,7 +221,7 @@ namespace NmeaLogViewer {
             RefreshPlots();
         }
         
-        private void AddNewPlot( ref List<float> dataX, ref List<float> dataY, ref bool isFirstPlot ) {
+        private void AddNewPlot( ref List<float> dataX, ref List<float> dataY, ref bool isFirstPlot, string plotTitle = "" ) {
             if ( dataX == null ) { return; }
             if ( dataY == null ) { return; }
             
@@ -229,6 +230,9 @@ namespace NmeaLogViewer {
             
             VisBox.Plot plot = new VisBox.Plot();
             VisBox.Series s1 = new VisBox.Series( ref dataX, ref dataY, new VisBox.Marker(Color.Red, ' '), new Pen( Color.Blue ) );
+            s1.Marker.Symbol = chkBxShowMarker.Checked ? '+' : ' ';
+            
+            plot.Title = plotTitle;
             
             plot.AxisLimitsX        = _axisLimitsX;
             plot.gridX.Autoscale    = true;
@@ -281,7 +285,6 @@ namespace NmeaLogViewer {
             splitter.Dock = DockStyle.Top;
             splitter.Height = 5;
             splitter.BringToFront();
-            
         }
         
         private void RefreshPlots() {
