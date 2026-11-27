@@ -49,6 +49,11 @@ namespace NmeaLogViewer {
             _cntrs = new NmeaCntr();
             if ( _lines != null ) { _lines.Clear(); }
             
+            if ( txtBxLogFilename.Text.Length <= 0 ) {
+                writeStatus( "Empty file path!\r\n", clear: false );
+                return;
+            }
+            
             _lines = ParseLogFile(txtBxLogFilename.Text, ref _cntrs);
             
             Dictionary<string, int> counts = new Dictionary<string, int>();
@@ -156,6 +161,7 @@ namespace NmeaLogViewer {
         
         
         public static long CountLinesInFile(string filePath) {
+            if ( filePath.Length == 0 ) { return 0; }
             byte[]  buffer          = new byte[4096];
             long    cntrLines       = 0;
             int     cntrReadBytes;

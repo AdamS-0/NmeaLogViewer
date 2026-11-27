@@ -237,7 +237,7 @@ namespace NmeaLogViewer {
             plot.AxisLimitsX        = _axisLimitsX;
             plot.gridX.Autoscale    = true;
             
-            plot.gridY.Format       = "0.00";
+            plot.gridY.Format       = "0.0000";
             plot.gridY.ShowLables   = true;
             plot.gridY.Autoscale    = true;
 //            plot.AxisLimitsY.Autoscale = true;
@@ -254,16 +254,16 @@ namespace NmeaLogViewer {
             plot.gridXminor.Autoscale   = true;
             plot.gridXminor.ScaleFactor = 0.25f;
             
-            float fMin = 0.0f;
-            float fMax = 0.0f;
+            double fMin = 0.0f;
+            double fMax = 0.0f;
             
             if ( dataY.Count > 0 ) {
                 fMin = dataY.Min();
                 fMax = dataY.Max();
             }
             
-            float deltaY = Math.Abs( fMax - fMin );
-            if ( deltaY == 0.0f ) {
+            double deltaY = Math.Abs( fMax - fMin );
+            if ( deltaY == 0.0 ) {
                 deltaY = 1;
             }
             

@@ -129,6 +129,6 @@ Each line is a new regex, syntax:
 {const sequence unique name}&lt;={regex with named groups}
 
 e.g.
-$GPGGA&lt;=\$GPGGA,(?&lt;Utc&gt;.*?),(?&lt;Lat&gt;.*?),N,(?&lt;Lon&gt;.*?),E,(?&lt;Fix&gt;.*?),(?&lt;Sat&gt;.*?),(?&lt;Dop&gt;.*?),(?&lt;Height&gt;.*?),M,(?&lt;Geo&gt;.*?),.*?\*</value>
+GGA&lt;=\$G.GGA,(?&lt;Utc&gt;.*?),(?&lt;Lat&gt;.*?),N,(?&lt;Lon&gt;.*?),E,(?&lt;Fix&gt;.*?),(?&lt;Sat&gt;.*?),(?&lt;Dop&gt;.*?),(?&lt;Height&gt;.*?),M,(?&lt;Geo&gt;.*?),.*?\*</value>
   </data>
 </root>

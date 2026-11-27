@@ -58,6 +58,7 @@ namespace NmeaLogViewer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.grpBxInput = new System.Windows.Forms.GroupBox();
+            this.chkBxSkipNmeaCheck = new System.Windows.Forms.CheckBox();
             this.btnNewView = new System.Windows.Forms.Button();
             this.btnParseLog = new System.Windows.Forms.Button();
             this.btnLoadlog = new System.Windows.Forms.Button();
@@ -75,7 +76,6 @@ namespace NmeaLogViewer
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.chkBxSkipNmeaCheck = new System.Windows.Forms.CheckBox();
             this.grpBxInput.SuspendLayout();
             this.panel1.SuspendLayout();
             this.grpBxStats.SuspendLayout();
@@ -98,6 +98,15 @@ namespace NmeaLogViewer
             this.grpBxInput.TabIndex = 0;
             this.grpBxInput.TabStop = false;
             this.grpBxInput.Text = "Log";
+            // 
+            // chkBxSkipNmeaCheck
+            // 
+            this.chkBxSkipNmeaCheck.Location = new System.Drawing.Point(234, 42);
+            this.chkBxSkipNmeaCheck.Name = "chkBxSkipNmeaCheck";
+            this.chkBxSkipNmeaCheck.Size = new System.Drawing.Size(114, 24);
+            this.chkBxSkipNmeaCheck.TabIndex = 4;
+            this.chkBxSkipNmeaCheck.Text = "Skip NMEA check";
+            this.chkBxSkipNmeaCheck.UseVisualStyleBackColor = true;
             // 
             // btnNewView
             // 
@@ -218,8 +227,8 @@ namespace NmeaLogViewer
             this.rtbRegexes.Name = "rtbRegexes";
             this.rtbRegexes.Size = new System.Drawing.Size(236, 170);
             this.rtbRegexes.TabIndex = 0;
-            this.rtbRegexes.Text = "$GPGGA<=\\$GPGGA,(?<Utc>.*?),(?<Lat>.*?),N,(?<Lon>.*?),E,(?<Fix>.*?),(?<Sat>.*?),(" +
-    "?<Dop>.*?),(?<Height>.*?),M,(?<Geo>.*?),.*?\\*\n";
+            this.rtbRegexes.Text = "GGA<=\\$G.GGA,(?<Utc>.*?),(?<Lat>.*?),N,(?<Lon>.*?),E,(?<Fix>.*?),(?<Sat>.*?),(?<D" +
+    "op>.*?),(?<Height>.*?),M,(?<Geo>.*?),.*?\\*\n";
             this.toolTip1.SetToolTip(this.rtbRegexes, resources.GetString("rtbRegexes.ToolTip"));
             this.rtbRegexes.TextChanged += new System.EventHandler(this.RtbRegexesTextChanged);
             // 
@@ -271,15 +280,6 @@ namespace NmeaLogViewer
             this.splitter2.Size = new System.Drawing.Size(3, 189);
             this.splitter2.TabIndex = 5;
             this.splitter2.TabStop = false;
-            // 
-            // chkBxSkipNmeaCheck
-            // 
-            this.chkBxSkipNmeaCheck.Location = new System.Drawing.Point(234, 42);
-            this.chkBxSkipNmeaCheck.Name = "chkBxSkipNmeaCheck";
-            this.chkBxSkipNmeaCheck.Size = new System.Drawing.Size(114, 24);
-            this.chkBxSkipNmeaCheck.TabIndex = 4;
-            this.chkBxSkipNmeaCheck.Text = "Skip NMEA check";
-            this.chkBxSkipNmeaCheck.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
